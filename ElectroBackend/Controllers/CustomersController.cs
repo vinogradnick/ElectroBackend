@@ -6,61 +6,62 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ElectroBackend.Models;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace ElectroBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class OrdersController : ControllerBase
+    public class CustomersController : ControllerBase
     {
         private readonly ElectroApiContext _context;
 
-        public OrdersController(ElectroApiContext context)
+        public CustomersController(ElectroApiContext context)
         {
             _context = context;
         }
 
-        // GET: api/Orders
+        // GET: api/Customers
         [HttpGet]
-        public IEnumerable<Order> GetOrders()
+        public IEnumerable<Customer> GetCustomers()
         {
-            return _context.Orders;
+            return _context.Customers;
         }
 
-        // GET: api/Orders/5
+        // GET: api/Customers/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetOrder([FromRoute] int id)
+        public async Task<IActionResult> GetCustomer([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var order = await _context.Orders.FindAsync(id);
+            var customer = await _context.Customers.FindAsync(id);
 
-            if (order == null)
+            if (customer == null)
             {
                 return NotFound();
             }
 
-            return Ok(order);
+            return Ok(customer);
         }
 
-        // PUT: api/Orders/5
+        // PUT: api/Customers/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrder([FromRoute] int id, [FromBody] Order order)
+        public async Task<IActionResult> PutCustomer([FromRoute] int id, [FromBody] Customer customer)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != order.Id)
+            if (id != customer.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(order).State = EntityState.Modified;
+            _context.Entry(customer).State = EntityState.Modified;
 
             try
             {
@@ -68,7 +69,7 @@ namespace ElectroBackend.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!OrderExists(id))
+                if (!CustomerExists(id))
                 {
                     return NotFound();
                 }
@@ -81,46 +82,45 @@ namespace ElectroBackend.Controllers
             return NoContent();
         }
 
-        // POST: api/Orders
+        // POST: api/Customers
         [HttpPost]
-        public async Task<IActionResult> PostOrder([FromBody] Order order)
+        public async Task<IActionResult> PostCustomer([FromBody] Customer customer)
         {
-            
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.Orders.Add(order);
+            _context.Customers.Add(customer);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetOrder", new { id = order.Id }, order);
+            return CreatedAtAction("GetCustomer", new { id = customer.Id }, customer);
         }
 
-        // DELETE: api/Orders/5
+        // DELETE: api/Customers/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOrder([FromRoute] int id)
+        public async Task<IActionResult> DeleteCustomer([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var order = await _context.Orders.FindAsync(id);
-            if (order == null)
+            var customer = await _context.Customers.FindAsync(id);
+            if (customer == null)
             {
                 return NotFound();
             }
 
-            _context.Orders.Remove(order);
+            _context.Customers.Remove(customer);
             await _context.SaveChangesAsync();
 
-            return Ok(order);
+            return Ok(customer);
         }
 
-        private bool OrderExists(int id)
+        private bool CustomerExists(int id)
         {
-            return _context.Orders.Any(e => e.Id == id);
+            return _context.Customers.Any(e => e.Id == id);
         }
     }
 }

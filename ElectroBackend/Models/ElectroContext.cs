@@ -19,5 +19,7 @@ namespace ElectroBackend.Models
         public DbSet<Workload> Workloads { get; set; }
         public DbSet<Order> Orders { get; set; }
         
+       
+        
     }
 }

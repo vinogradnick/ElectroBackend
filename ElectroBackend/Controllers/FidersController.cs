@@ -11,56 +11,56 @@ namespace ElectroBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class OrdersController : ControllerBase
+    public class FidersController : ControllerBase
     {
         private readonly ElectroApiContext _context;
 
-        public OrdersController(ElectroApiContext context)
+        public FidersController(ElectroApiContext context)
         {
             _context = context;
         }
 
-        // GET: api/Orders
+        // GET: api/Fiders
         [HttpGet]
-        public IEnumerable<Order> GetOrders()
+        public IEnumerable<Fider> GetFiders()
         {
-            return _context.Orders;
+            return _context.Fiders;
         }
 
-        // GET: api/Orders/5
+        // GET: api/Fiders/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetOrder([FromRoute] int id)
+        public async Task<IActionResult> GetFider([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var order = await _context.Orders.FindAsync(id);
+            var fider = await _context.Fiders.FindAsync(id);
 
-            if (order == null)
+            if (fider == null)
             {
                 return NotFound();
             }
 
-            return Ok(order);
+            return Ok(fider);
         }
 
-        // PUT: api/Orders/5
+        // PUT: api/Fiders/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrder([FromRoute] int id, [FromBody] Order order)
+        public async Task<IActionResult> PutFider([FromRoute] int id, [FromBody] Fider fider)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != order.Id)
+            if (id != fider.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(order).State = EntityState.Modified;
+            _context.Entry(fider).State = EntityState.Modified;
 
             try
             {
@@ -68,7 +68,7 @@ namespace ElectroBackend.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!OrderExists(id))
+                if (!FiderExists(id))
                 {
                     return NotFound();
                 }
@@ -81,46 +81,45 @@ namespace ElectroBackend.Controllers
             return NoContent();
         }
 
-        // POST: api/Orders
+        // POST: api/Fiders
         [HttpPost]
-        public async Task<IActionResult> PostOrder([FromBody] Order order)
+        public async Task<IActionResult> PostFider([FromBody] Fider fider)
         {
-            
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.Orders.Add(order);
+            _context.Fiders.Add(fider);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetOrder", new { id = order.Id }, order);
+            return CreatedAtAction("GetFider", new { id = fider.Id }, fider);
         }
 
-        // DELETE: api/Orders/5
+        // DELETE: api/Fiders/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOrder([FromRoute] int id)
+        public async Task<IActionResult> DeleteFider([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var order = await _context.Orders.FindAsync(id);
-            if (order == null)
+            var fider = await _context.Fiders.FindAsync(id);
+            if (fider == null)
             {
                 return NotFound();
             }
 
-            _context.Orders.Remove(order);
+            _context.Fiders.Remove(fider);
             await _context.SaveChangesAsync();
 
-            return Ok(order);
+            return Ok(fider);
         }
 
-        private bool OrderExists(int id)
+        private bool FiderExists(int id)
         {
-            return _context.Orders.Any(e => e.Id == id);
+            return _context.Fiders.Any(e => e.Id == id);
         }
     }
 }

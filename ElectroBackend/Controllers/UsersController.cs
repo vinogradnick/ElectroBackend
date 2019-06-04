@@ -11,56 +11,56 @@ namespace ElectroBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class OrdersController : ControllerBase
+    public class UsersController : ControllerBase
     {
         private readonly ElectroApiContext _context;
 
-        public OrdersController(ElectroApiContext context)
+        public UsersController(ElectroApiContext context)
         {
             _context = context;
         }
 
-        // GET: api/Orders
+        // GET: api/Users
         [HttpGet]
-        public IEnumerable<Order> GetOrders()
+        public IEnumerable<User> GetUsers()
         {
-            return _context.Orders;
+            return _context.Users;
         }
 
-        // GET: api/Orders/5
+        // GET: api/Users/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetOrder([FromRoute] int id)
+        public async Task<IActionResult> GetUser([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var order = await _context.Orders.FindAsync(id);
+            var user = await _context.Users.FindAsync(id);
 
-            if (order == null)
+            if (user == null)
             {
                 return NotFound();
             }
 
-            return Ok(order);
+            return Ok(user);
         }
 
-        // PUT: api/Orders/5
+        // PUT: api/Users/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrder([FromRoute] int id, [FromBody] Order order)
+        public async Task<IActionResult> PutUser([FromRoute] int id, [FromBody] User user)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != order.Id)
+            if (id != user.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(order).State = EntityState.Modified;
+            _context.Entry(user).State = EntityState.Modified;
 
             try
             {
@@ -68,7 +68,7 @@ namespace ElectroBackend.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!OrderExists(id))
+                if (!UserExists(id))
                 {
                     return NotFound();
                 }
@@ -81,46 +81,45 @@ namespace ElectroBackend.Controllers
             return NoContent();
         }
 
-        // POST: api/Orders
+        // POST: api/Users
         [HttpPost]
-        public async Task<IActionResult> PostOrder([FromBody] Order order)
+        public async Task<IActionResult> PostUser([FromBody] User user)
         {
-            
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.Orders.Add(order);
+            _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetOrder", new { id = order.Id }, order);
+            return CreatedAtAction("GetUser", new { id = user.Id }, user);
         }
 
-        // DELETE: api/Orders/5
+        // DELETE: api/Users/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOrder([FromRoute] int id)
+        public async Task<IActionResult> DeleteUser([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var order = await _context.Orders.FindAsync(id);
-            if (order == null)
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
             {
                 return NotFound();
             }
 
-            _context.Orders.Remove(order);
+            _context.Users.Remove(user);
             await _context.SaveChangesAsync();
 
-            return Ok(order);
+            return Ok(user);
         }
 
-        private bool OrderExists(int id)
+        private bool UserExists(int id)
         {
-            return _context.Orders.Any(e => e.Id == id);
+            return _context.Users.Any(e => e.Id == id);
         }
     }
 }

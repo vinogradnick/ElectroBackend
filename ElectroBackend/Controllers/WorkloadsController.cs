@@ -11,56 +11,56 @@ namespace ElectroBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class OrdersController : ControllerBase
+    public class WorkloadsController : ControllerBase
     {
         private readonly ElectroApiContext _context;
 
-        public OrdersController(ElectroApiContext context)
+        public WorkloadsController(ElectroApiContext context)
         {
             _context = context;
         }
 
-        // GET: api/Orders
+        // GET: api/Workloads
         [HttpGet]
-        public IEnumerable<Order> GetOrders()
+        public IEnumerable<Workload> GetWorkloads()
         {
-            return _context.Orders;
+            return _context.Workloads;
         }
 
-        // GET: api/Orders/5
+        // GET: api/Workloads/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetOrder([FromRoute] int id)
+        public async Task<IActionResult> GetWorkload([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var order = await _context.Orders.FindAsync(id);
+            var workload = await _context.Workloads.FindAsync(id);
 
-            if (order == null)
+            if (workload == null)
             {
                 return NotFound();
             }
 
-            return Ok(order);
+            return Ok(workload);
         }
 
-        // PUT: api/Orders/5
+        // PUT: api/Workloads/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrder([FromRoute] int id, [FromBody] Order order)
+        public async Task<IActionResult> PutWorkload([FromRoute] int id, [FromBody] Workload workload)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != order.Id)
+            if (id != workload.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(order).State = EntityState.Modified;
+            _context.Entry(workload).State = EntityState.Modified;
 
             try
             {
@@ -68,7 +68,7 @@ namespace ElectroBackend.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!OrderExists(id))
+                if (!WorkloadExists(id))
                 {
                     return NotFound();
                 }
@@ -81,46 +81,45 @@ namespace ElectroBackend.Controllers
             return NoContent();
         }
 
-        // POST: api/Orders
+        // POST: api/Workloads
         [HttpPost]
-        public async Task<IActionResult> PostOrder([FromBody] Order order)
+        public async Task<IActionResult> PostWorkload([FromBody] Workload workload)
         {
-            
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.Orders.Add(order);
+            _context.Workloads.Add(workload);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetOrder", new { id = order.Id }, order);
+            return CreatedAtAction("GetWorkload", new { id = workload.Id }, workload);
         }
 
-        // DELETE: api/Orders/5
+        // DELETE: api/Workloads/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOrder([FromRoute] int id)
+        public async Task<IActionResult> DeleteWorkload([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var order = await _context.Orders.FindAsync(id);
-            if (order == null)
+            var workload = await _context.Workloads.FindAsync(id);
+            if (workload == null)
             {
                 return NotFound();
             }
 
-            _context.Orders.Remove(order);
+            _context.Workloads.Remove(workload);
             await _context.SaveChangesAsync();
 
-            return Ok(order);
+            return Ok(workload);
         }
 
-        private bool OrderExists(int id)
+        private bool WorkloadExists(int id)
         {
-            return _context.Orders.Any(e => e.Id == id);
+            return _context.Workloads.Any(e => e.Id == id);
         }
     }
 }
