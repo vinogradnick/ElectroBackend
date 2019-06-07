@@ -13,56 +13,58 @@ namespace ElectroBackend.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class UsersController : ControllerBase
+    public class SectionsController : ControllerBase
     {
         private readonly ElectroApiContext _context;
 
-        public UsersController(ElectroApiContext context)
+        public SectionsController(ElectroApiContext context)
         {
             _context = context;
         }
 
-        // GET: api/Users
+        // GET: api/Sections
         [HttpGet]
-        public IEnumerable<User> GetUsers()
+        public IEnumerable<Section> GetSections()
         {
-            return _context.Users;
+            return _context.Sections;
         }
 
-        // GET: api/Users/5
+        // GET: api/Sections/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetUser([FromRoute] int id)
+        public async Task<IActionResult> GetSection([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var user = await _context.Users.FindAsync(id);
+            var section = await _context.Sections.FindAsync(id);
 
-            if (user == null)
+            if (section == null)
             {
                 return NotFound();
             }
 
-            return Ok(user);
+            return Ok(section);
         }
 
-        // PUT: api/Users/5
+        // PUT: api/Sections/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser([FromRoute] int id, [FromBody] User user)
+        public async Task<IActionResult> PutSection([FromRoute] int id, [FromBody] Section section)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != user.Id)
+            if (id != section.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(user).State = EntityState.Modified;
+            _context.Entry(section).State = EntityState.Modified;
+            var counter = section.Counter;
+            _context.Entry(counter).State = EntityState.Modified;
 
             try
             {
@@ -70,7 +72,7 @@ namespace ElectroBackend.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(id))
+                if (!SectionExists(id))
                 {
                     return NotFound();
                 }
@@ -83,45 +85,45 @@ namespace ElectroBackend.Controllers
             return NoContent();
         }
 
-        // POST: api/Users
+        // POST: api/Sections
         [HttpPost]
-        public async Task<IActionResult> PostUser([FromBody] User user)
+        public async Task<IActionResult> PostSection([FromBody] Section section)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.Users.Add(user);
+            _context.Sections.Add(section);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
+            return CreatedAtAction("GetSection", new { id = section.Id }, section);
         }
 
-        // DELETE: api/Users/5
+        // DELETE: api/Sections/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser([FromRoute] int id)
+        public async Task<IActionResult> DeleteSection([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
+            var section = await _context.Sections.FindAsync(id);
+            if (section == null)
             {
                 return NotFound();
             }
 
-            _context.Users.Remove(user);
+            _context.Sections.Remove(section);
             await _context.SaveChangesAsync();
 
-            return Ok(user);
+            return Ok(section);
         }
 
-        private bool UserExists(int id)
+        private bool SectionExists(int id)
         {
-            return _context.Users.Any(e => e.Id == id);
+            return _context.Sections.Any(e => e.Id == id);
         }
     }
 }

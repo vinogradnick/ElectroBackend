@@ -6,11 +6,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ElectroBackend.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace ElectroBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class OrdersController : ControllerBase
     {
         private readonly ElectroApiContext _context;
@@ -83,7 +86,7 @@ namespace ElectroBackend.Controllers
 
         // POST: api/Orders
         [HttpPost]
-        public async Task<IActionResult> PostOrder([FromBody] Order order)
+        public async Task<IActionResult> PostOrder([FromBody]Order order)
         {
             
             if (!ModelState.IsValid)

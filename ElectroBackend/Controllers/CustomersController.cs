@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ElectroBackend.Models;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ElectroBackend.Controllers
 {
@@ -23,6 +24,7 @@ namespace ElectroBackend.Controllers
 
         // GET: api/Customers
         [HttpGet]
+        [Authorize]
         public IEnumerable<Customer> GetCustomers()
         {
             return _context.Customers;
@@ -30,6 +32,8 @@ namespace ElectroBackend.Controllers
 
         // GET: api/Customers/5
         [HttpGet("{id}")]
+        [Authorize]
+
         public async Task<IActionResult> GetCustomer([FromRoute] int id)
         {
             if (!ModelState.IsValid)
@@ -79,7 +83,7 @@ namespace ElectroBackend.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok(await _context.Customers.FindAsync(id));
         }
 
         // POST: api/Customers

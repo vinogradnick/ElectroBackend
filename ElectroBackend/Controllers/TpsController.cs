@@ -6,11 +6,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ElectroBackend.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ElectroBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
+
     public class TpsController : ControllerBase
     {
         private readonly ElectroApiContext _context;
@@ -61,6 +64,7 @@ namespace ElectroBackend.Controllers
             }
 
             _context.Entry(tp).State = EntityState.Modified;
+            _context.Entry(tp.Transformer).State = EntityState.Modified;
 
             try
             {
@@ -84,7 +88,7 @@ namespace ElectroBackend.Controllers
         // POST: api/Tps
         [HttpPost]
         public async Task<IActionResult> PostTp([FromBody] Tp tp)
-        {
+         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

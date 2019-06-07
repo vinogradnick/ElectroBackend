@@ -6,11 +6,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ElectroBackend.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ElectroBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
+
     public class LinesController : ControllerBase
     {
         private readonly ElectroApiContext _context;

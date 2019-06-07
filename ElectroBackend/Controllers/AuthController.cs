@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using ElectroBackend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -28,36 +29,64 @@ namespace ElectroBackend.Controllers
         {
             return Ok(new { mes="gucci_gang" });
         }
+        
         [HttpPost]
-        public async Task<IActionResult> PostLogin(UserModel user)
+        [AllowAnonymous]
+        public async Task PostLogin(UserModel user)
         {
 
-
-            if (user.Name == "admin" && user.Password == "admin")
+            
+            var identity = GetIdentity(user.Name, user.Password);
+            if (identity == null)
             {
-                var descr = new SecurityTokenDescriptor
-                {
-                    Subject = new ClaimsIdentity(new Claim[]
-                    {
-                       new Claim("UserID","100")
-                    })
-                };
-           
-       
-                var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("123456789"));
-                var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256Signature);
+                Response.StatusCode = 400;
+                await Response.WriteAsync("Invalid username or password.");
+                return;
+          }
 
-                
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var securityToken = tokenHandler.CreateToken(descr);
-                var token = tokenHandler.WriteToken(securityToken);
-                return Ok(new { token });
-           
-            }
-           
-            return BadRequest( new { message="press F" });
+            var now = DateTime.UtcNow;
+            // создаем JWT-токен
+            var jwt = new JwtSecurityToken(
+                    issuer: AuthOptions.ISSUER,
+                    audience: AuthOptions.AUDIENCE,
+                    notBefore: now,
+                    claims: identity.Claims,
+                    
+                    signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+            var response = new
+            {
+                access_token = encodedJwt,
+                username = identity.Name
+            };
+
+            // сериализация ответа
+
+            Response.ContentType = "application/json";
+            await Response.WriteAsync(JsonConvert.SerializeObject(response, new JsonSerializerSettings { Formatting = Formatting.Indented }));
+
         }
-       
-    
+        private ClaimsIdentity GetIdentity(string username, string password)
+        {
+            User person = _context.Users.FirstOrDefault(x => x.Name == username && x.Password == password);
+            if (person != null)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimsIdentity.DefaultNameClaimType, person.Name),
+                    new Claim(ClaimsIdentity.DefaultRoleClaimType, person.Role)
+                };
+                ClaimsIdentity claimsIdentity =
+                new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
+                    ClaimsIdentity.DefaultRoleClaimType);
+                return claimsIdentity;
+            }
+
+            // если пользователя не найдено
+            return null;
+        }
+
+
     }
 }

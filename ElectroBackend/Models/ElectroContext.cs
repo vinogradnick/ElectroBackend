@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ElectroBackend.Models;
 
 namespace ElectroBackend.Models
 {
@@ -18,6 +19,7 @@ namespace ElectroBackend.Models
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Workload> Workloads { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<ElectroBackend.Models.Counter> Counter { get; set; }
         
        
         

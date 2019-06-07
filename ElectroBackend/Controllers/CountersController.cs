@@ -6,63 +6,61 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ElectroBackend.Models;
-using Microsoft.AspNetCore.Authorization;
 
 namespace ElectroBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
-    public class UsersController : ControllerBase
+    public class CountersController : ControllerBase
     {
         private readonly ElectroApiContext _context;
 
-        public UsersController(ElectroApiContext context)
+        public CountersController(ElectroApiContext context)
         {
             _context = context;
         }
 
-        // GET: api/Users
+        // GET: api/Counters
         [HttpGet]
-        public IEnumerable<User> GetUsers()
+        public IEnumerable<Counter> GetCounter()
         {
-            return _context.Users;
+            return _context.Counter;
         }
 
-        // GET: api/Users/5
+        // GET: api/Counters/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetUser([FromRoute] int id)
+        public async Task<IActionResult> GetCounter([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var user = await _context.Users.FindAsync(id);
+            var counter = await _context.Counter.FindAsync(id);
 
-            if (user == null)
+            if (counter == null)
             {
                 return NotFound();
             }
 
-            return Ok(user);
+            return Ok(counter);
         }
 
-        // PUT: api/Users/5
+        // PUT: api/Counters/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser([FromRoute] int id, [FromBody] User user)
+        public async Task<IActionResult> PutCounter([FromRoute] int id, [FromBody] Counter counter)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != user.Id)
+            if (id != counter.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(user).State = EntityState.Modified;
+            _context.Entry(counter).State = EntityState.Modified;
 
             try
             {
@@ -70,7 +68,7 @@ namespace ElectroBackend.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(id))
+                if (!CounterExists(id))
                 {
                     return NotFound();
                 }
@@ -83,45 +81,45 @@ namespace ElectroBackend.Controllers
             return NoContent();
         }
 
-        // POST: api/Users
+        // POST: api/Counters
         [HttpPost]
-        public async Task<IActionResult> PostUser([FromBody] User user)
+        public async Task<IActionResult> PostCounter([FromBody] Counter counter)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.Users.Add(user);
+            _context.Counter.Add(counter);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
+            return CreatedAtAction("GetCounter", new { id = counter.Id }, counter);
         }
 
-        // DELETE: api/Users/5
+        // DELETE: api/Counters/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser([FromRoute] int id)
+        public async Task<IActionResult> DeleteCounter([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
+            var counter = await _context.Counter.FindAsync(id);
+            if (counter == null)
             {
                 return NotFound();
             }
 
-            _context.Users.Remove(user);
+            _context.Counter.Remove(counter);
             await _context.SaveChangesAsync();
 
-            return Ok(user);
+            return Ok(counter);
         }
 
-        private bool UserExists(int id)
+        private bool CounterExists(int id)
         {
-            return _context.Users.Any(e => e.Id == id);
+            return _context.Counter.Any(e => e.Id == id);
         }
     }
 }

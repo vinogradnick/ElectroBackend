@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ElectroBackend.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,32 +30,42 @@ namespace ElectroBackend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+           
             services.AddCors(options => options.AddPolicy(CORS_STRING, builder => { builder.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin(); }));
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddEntityFrameworkSqlServer().AddDbContext<ElectroBackend.Models.ElectroApiContext>(opt => {
                 opt.UseSqlServer("Data Source=localhost;Initial Catalog=ElectroDb;Integrated Security=True;Pooling=False");
                 opt.UseLazyLoadingProxies();
             });
-            services.AddAuthentication(options => {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 
-            }).AddJwtBearer(op =>
-            {
-            op.SaveToken = false;
-            op.RequireHttpsMetadata = false;
-                op.TokenValidationParameters = new TokenValidationParameters()
-                {
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ValidAudience = "http://localhost:4200",
-                    ValidIssuer= "http://localhost:4200",
-                    IssuerSigningKey=new SymmetricSecurityKey(Encoding.UTF8.GetBytes("123456789"))
-                };
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                   .AddJwtBearer(options =>
+                   {
+                       options.RequireHttpsMetadata = false;
+                       options.TokenValidationParameters = new TokenValidationParameters
+                       {
+                            // укзывает, будет ли валидироваться издатель при валидации токена
+                            ValidateIssuer = true,
+                            // строка, представляющая издателя
+                            ValidIssuer = AuthOptions.ISSUER,
 
-            });
-           
+                            // будет ли валидироваться потребитель токена
+                            ValidateAudience = true,
+                            // установка потребителя токена
+                            ValidAudience = AuthOptions.AUDIENCE,
+                            // будет ли валидироваться время существования
+                            ValidateLifetime = false,
+
+                            // установка ключа безопасности
+                            IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
+                            // валидация ключа безопасности
+                            ValidateIssuerSigningKey = true,
+                       };
+                   });
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,9 +75,11 @@ namespace ElectroBackend
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseCors(CORS_STRING);
-            app.UseMvc();
             app.UseAuthentication();
+            app.UseCors(CORS_STRING);
+           
+            app.UseMvc();
+            
         }
     }
 }

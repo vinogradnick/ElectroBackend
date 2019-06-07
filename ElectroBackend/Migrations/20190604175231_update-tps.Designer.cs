@@ -4,14 +4,16 @@ using ElectroBackend.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ElectroBackend.Migrations
 {
     [DbContext(typeof(ElectroApiContext))]
-    partial class ElectroApiContextModelSnapshot : ModelSnapshot
+    [Migration("20190604175231_update-tps")]
+    partial class updatetps
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -80,6 +82,8 @@ namespace ElectroBackend.Migrations
 
                     b.Property<int>("CounterId");
 
+                    b.Property<int?>("FiderId");
+
                     b.Property<int?>("LineId");
 
                     b.Property<string>("Name");
@@ -92,11 +96,17 @@ namespace ElectroBackend.Migrations
 
                     b.Property<bool>("Status");
 
+                    b.Property<int?>("TpId");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CounterId");
 
+                    b.HasIndex("FiderId");
+
                     b.HasIndex("LineId");
+
+                    b.HasIndex("TpId");
 
                     b.ToTable("Customers");
                 });
@@ -257,8 +267,6 @@ namespace ElectroBackend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("CounterId");
-
                     b.Property<string>("Geocode");
 
                     b.Property<string>("Name");
@@ -270,8 +278,6 @@ namespace ElectroBackend.Migrations
                     b.Property<int>("Voltage");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CounterId");
 
                     b.HasIndex("TpId");
 
@@ -434,9 +440,17 @@ namespace ElectroBackend.Migrations
                         .HasForeignKey("CounterId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("ElectroBackend.Models.Line")
+                    b.HasOne("ElectroBackend.Models.Fider", "Fider")
+                        .WithMany()
+                        .HasForeignKey("FiderId");
+
+                    b.HasOne("ElectroBackend.Models.Line", "Line")
                         .WithMany("Customers")
                         .HasForeignKey("LineId");
+
+                    b.HasOne("ElectroBackend.Models.Tp", "Tp")
+                        .WithMany()
+                        .HasForeignKey("TpId");
                 });
 
             modelBuilder.Entity("ElectroBackend.Models.CustomerUsage", b =>
@@ -448,7 +462,7 @@ namespace ElectroBackend.Migrations
 
             modelBuilder.Entity("ElectroBackend.Models.Line", b =>
                 {
-                    b.HasOne("ElectroBackend.Models.Section")
+                    b.HasOne("ElectroBackend.Models.Section", "Section")
                         .WithMany("Lines")
                         .HasForeignKey("SectionId");
                 });
@@ -477,25 +491,21 @@ namespace ElectroBackend.Migrations
 
             modelBuilder.Entity("ElectroBackend.Models.PhaseValue", b =>
                 {
-                    b.HasOne("ElectroBackend.Models.Phase")
+                    b.HasOne("ElectroBackend.Models.Phase", "Phase")
                         .WithMany("PhaseValues")
                         .HasForeignKey("PhaseId");
                 });
 
             modelBuilder.Entity("ElectroBackend.Models.Section", b =>
                 {
-                    b.HasOne("ElectroBackend.Models.Counter", "Counter")
-                        .WithMany()
-                        .HasForeignKey("CounterId");
-
-                    b.HasOne("ElectroBackend.Models.Tp")
+                    b.HasOne("ElectroBackend.Models.Tp", "Tp")
                         .WithMany("Sections")
                         .HasForeignKey("TpId");
                 });
 
             modelBuilder.Entity("ElectroBackend.Models.Tp", b =>
                 {
-                    b.HasOne("ElectroBackend.Models.Fider")
+                    b.HasOne("ElectroBackend.Models.Fider", "Fider")
                         .WithMany("Tps")
                         .HasForeignKey("FiderId");
 
