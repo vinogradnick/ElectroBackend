@@ -11,6 +11,8 @@ namespace ElectroBackend.Models
         public string Geocode { get; set; }
         public virtual List<Line> Lines { get; set; }
         public virtual Counter Counter { get; set; }
+        public int? TpId { get; set; }
+
         public Section()
         {
 

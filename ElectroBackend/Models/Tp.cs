@@ -11,6 +11,7 @@ namespace ElectroBackend.Models
         public string Geocode { get; set; }
         public virtual List<Section> Sections { get; set; }
         public virtual Transformer Transformer { get; set; }
+        public int? FiderId { get; set; }
         public Tp()
         {
 

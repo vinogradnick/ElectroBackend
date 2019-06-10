@@ -14,6 +14,8 @@ namespace ElectroBackend.Models
        
         public virtual List<CustomerUsage> Usages { get; set; }
         public int CounterId { get; set; }
+        public int? LineId { get; set; }
+
         public Customer()
         {
 

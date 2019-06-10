@@ -10,6 +10,8 @@ namespace ElectroBackend.Models
         public int Voltage { get; set; }
         public string Geocode { get; set; }
         public virtual List<Customer> Customers { get; set; }
+        public int? SectionId { get; set; }
+
         public Line()
         {
 
