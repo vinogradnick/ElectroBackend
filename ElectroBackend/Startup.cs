@@ -33,7 +33,7 @@ namespace ElectroBackend
            
             services.AddCors(options => options.AddPolicy(CORS_STRING, builder => { builder.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin(); }));
             services.AddEntityFrameworkSqlServer().AddDbContext<ElectroBackend.Models.ElectroApiContext>(opt => {
-                opt.UseSqlServer("Data Source=localhost,32768;Initial Catalog=ElectroDb;User ID=sa;Password=7e530f4babc");
+                opt.UseSqlServer("Data Source=localhost,32768;Initial Catalog=ElectroDb;User ID=sa;Password=1oDnaB70");
                 opt.UseLazyLoadingProxies();
             });
 

@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ElectroBackend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace ElectroBackend.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class RequestController : ControllerBase
@@ -51,18 +53,7 @@ namespace ElectroBackend.Controllers
         {
             string res = "SELECT * ";
             var labels = table.Labels.Where(el => el.Select).ToList();
-            //for (int i = 0; i < labels.Count; i++)
-            //{
-            //    if (labels[i].Select)
-            //    {
-            //        if (i == labels.Count - 1)
-            //            res += $"{labels[i].Name} ";
-            //        else
-            //            res += $"{labels[i].Name}, ";
-
-            //    }
-                
-            //}
+            
             res += $" FROM {table.Name}s  ";
             var boxes = table.Boxes.Where(el => el.Selection && el.Value.Length>0 && el.Operator.Length>0).ToList();
             if (boxes.Count != 0)
