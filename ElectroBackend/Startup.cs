@@ -33,9 +33,10 @@ namespace ElectroBackend
            
             services.AddCors(options => options.AddPolicy(CORS_STRING, builder => { builder.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin(); }));
             services.AddEntityFrameworkSqlServer().AddDbContext<ElectroBackend.Models.ElectroApiContext>(opt => {
-                opt.UseSqlServer("Data Source=localhost,32768;Initial Catalog=ElectroDb;User ID=sa;Password=1oDnaB70");
+                opt.UseSqlServer("Data Source=localhost;Initial Catalog=ElectroDb;Integrated Security=True");
                 opt.UseLazyLoadingProxies();
             });
+                
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                    .AddJwtBearer(options =>
@@ -53,7 +54,9 @@ namespace ElectroBackend
                        };
                    });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1).AddJsonOptions(
+                options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            ); ;
 
 
 
@@ -65,9 +68,9 @@ namespace ElectroBackend
             {
                 app.UseDeveloperExceptionPage();
             }
-           app.UseDefaultFiles();
+            app.UseDefaultFiles();
            
-           app.UseStaticFiles(); 
+            app.UseStaticFiles(); 
             app.UseHsts();
             app.UseAuthentication();
             app.UseCors(CORS_STRING);

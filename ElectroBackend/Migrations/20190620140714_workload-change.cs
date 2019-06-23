@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ElectroBackend.Migrations
 {
-    public partial class v3Migration : Migration
+    public partial class workloadchange : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -90,6 +90,22 @@ namespace ElectroBackend.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(nullable: true),
+                    Password = table.Column<string>(nullable: true),
+                    Role = table.Column<string>(nullable: true),
+                    AccessLevel = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Counter",
                 columns: table => new
                 {
@@ -107,29 +123,6 @@ namespace ElectroBackend.Migrations
                         name: "FK_Counter_CounterBrand_BrandId",
                         column: x => x.BrandId,
                         principalTable: "CounterBrand",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Tps",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: true),
-                    Power = table.Column<int>(nullable: false),
-                    Voltage = table.Column<int>(nullable: false),
-                    Geocode = table.Column<string>(nullable: true),
-                    FiderId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tps", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Tps_Fiders_FiderId",
-                        column: x => x.FiderId,
-                        principalTable: "Fiders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -194,6 +187,57 @@ namespace ElectroBackend.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Tps",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(nullable: true),
+                    Power = table.Column<int>(nullable: false),
+                    Voltage = table.Column<int>(nullable: false),
+                    Geocode = table.Column<string>(nullable: true),
+                    TransformerId = table.Column<int>(nullable: true),
+                    FiderId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tps", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Tps_Fiders_FiderId",
+                        column: x => x.FiderId,
+                        principalTable: "Fiders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Tps_Transformers_TransformerId",
+                        column: x => x.TransformerId,
+                        principalTable: "Transformers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TransformerWorkload",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Date = table.Column<DateTime>(nullable: false),
+                    Value = table.Column<double>(nullable: false),
+                    TransformerId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TransformerWorkload", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TransformerWorkload_Transformers_TransformerId",
+                        column: x => x.TransformerId,
+                        principalTable: "Transformers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Sections",
                 columns: table => new
                 {
@@ -203,11 +247,18 @@ namespace ElectroBackend.Migrations
                     Power = table.Column<int>(nullable: false),
                     Voltage = table.Column<int>(nullable: false),
                     Geocode = table.Column<string>(nullable: true),
+                    CounterId = table.Column<int>(nullable: true),
                     TpId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Sections", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Sections_Counter_CounterId",
+                        column: x => x.CounterId,
+                        principalTable: "Counter",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Sections_Tps_TpId",
                         column: x => x.TpId,
@@ -233,27 +284,6 @@ namespace ElectroBackend.Migrations
                         name: "FK_Workloads_Tps_TpId",
                         column: x => x.TpId,
                         principalTable: "Tps",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TransformerWorkload",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Date = table.Column<DateTime>(nullable: false),
-                    Value = table.Column<double>(nullable: false),
-                    TransformerId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TransformerWorkload", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_TransformerWorkload_Transformers_TransformerId",
-                        column: x => x.TransformerId,
-                        principalTable: "Transformers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -313,9 +343,7 @@ namespace ElectroBackend.Migrations
                     ObjectAddress = table.Column<string>(nullable: true),
                     PlaceInstall = table.Column<string>(nullable: true),
                     Status = table.Column<bool>(nullable: false),
-                    CounterId = table.Column<int>(nullable: true),
-                    FiderId = table.Column<int>(nullable: true),
-                    TpId = table.Column<int>(nullable: true),
+                    CounterId = table.Column<int>(nullable: false),
                     LineId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
@@ -326,23 +354,11 @@ namespace ElectroBackend.Migrations
                         column: x => x.CounterId,
                         principalTable: "Counter",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Customers_Fiders_FiderId",
-                        column: x => x.FiderId,
-                        principalTable: "Fiders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Customers_Lines_LineId",
                         column: x => x.LineId,
                         principalTable: "Lines",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Customers_Tps_TpId",
-                        column: x => x.TpId,
-                        principalTable: "Tps",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -430,19 +446,9 @@ namespace ElectroBackend.Migrations
                 column: "CounterId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Customers_FiderId",
-                table: "Customers",
-                column: "FiderId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Customers_LineId",
                 table: "Customers",
                 column: "LineId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Customers_TpId",
-                table: "Customers",
-                column: "TpId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CustomerUsage_CustomerId",
@@ -480,6 +486,11 @@ namespace ElectroBackend.Migrations
                 column: "PhaseId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Sections_CounterId",
+                table: "Sections",
+                column: "CounterId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Sections_TpId",
                 table: "Sections",
                 column: "TpId");
@@ -488,6 +499,11 @@ namespace ElectroBackend.Migrations
                 name: "IX_Tps_FiderId",
                 table: "Tps",
                 column: "FiderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tps_TransformerId",
+                table: "Tps",
+                column: "TransformerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Transformers_ModelId",
@@ -528,6 +544,9 @@ namespace ElectroBackend.Migrations
                 name: "TransformerWorkload");
 
             migrationBuilder.DropTable(
+                name: "Users");
+
+            migrationBuilder.DropTable(
                 name: "Customers");
 
             migrationBuilder.DropTable(
@@ -540,34 +559,34 @@ namespace ElectroBackend.Migrations
                 name: "Phase");
 
             migrationBuilder.DropTable(
-                name: "Transformers");
-
-            migrationBuilder.DropTable(
-                name: "Counter");
-
-            migrationBuilder.DropTable(
                 name: "Lines");
 
             migrationBuilder.DropTable(
                 name: "Workloads");
 
             migrationBuilder.DropTable(
-                name: "TransformerModel");
-
-            migrationBuilder.DropTable(
-                name: "TransformerType");
-
-            migrationBuilder.DropTable(
-                name: "CounterBrand");
-
-            migrationBuilder.DropTable(
                 name: "Sections");
+
+            migrationBuilder.DropTable(
+                name: "Counter");
 
             migrationBuilder.DropTable(
                 name: "Tps");
 
             migrationBuilder.DropTable(
+                name: "CounterBrand");
+
+            migrationBuilder.DropTable(
                 name: "Fiders");
+
+            migrationBuilder.DropTable(
+                name: "Transformers");
+
+            migrationBuilder.DropTable(
+                name: "TransformerModel");
+
+            migrationBuilder.DropTable(
+                name: "TransformerType");
         }
     }
 }

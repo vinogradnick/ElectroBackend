@@ -12,6 +12,9 @@ namespace ElectroBackend.Models
         public virtual List<Section> Sections { get; set; }
         public virtual Transformer Transformer { get; set; }
         public int? FiderId { get; set; }
+        public virtual Fider Fider { get; set; }
+
+        public virtual  List<Workload> Workloads { get; set; }
         public Tp()
         {
 

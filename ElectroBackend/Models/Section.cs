@@ -12,6 +12,7 @@ namespace ElectroBackend.Models
         public virtual List<Line> Lines { get; set; }
         public virtual Counter Counter { get; set; }
         public int? TpId { get; set; }
+        public virtual Tp Tp { get; set; }
 
         public Section()
         {

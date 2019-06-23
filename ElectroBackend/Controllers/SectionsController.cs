@@ -65,6 +65,7 @@ namespace ElectroBackend.Controllers
             _context.Entry(section).State = EntityState.Modified;
             var counter = section.Counter;
             _context.Entry(counter).State = EntityState.Modified;
+            _context.Entry(counter.Brand).State = EntityState.Modified;
 
             try
             {

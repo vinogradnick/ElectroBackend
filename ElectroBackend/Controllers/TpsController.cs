@@ -65,6 +65,8 @@ namespace ElectroBackend.Controllers
 
             _context.Entry(tp).State = EntityState.Modified;
             _context.Entry(tp.Transformer).State = EntityState.Modified;
+            _context.Entry(tp.Transformer.Model).State = EntityState.Modified;
+            _context.Entry(tp.Transformer.Type).State = EntityState.Modified;
 
             try
             {

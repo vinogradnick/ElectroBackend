@@ -9,7 +9,10 @@ namespace ElectroBackend.Models
 {
     public class ElectroApiContext : DbContext
     {
-       public ElectroApiContext(DbContextOptions<ElectroApiContext> options) : base(options) { }
+        public ElectroApiContext(DbContextOptions<ElectroApiContext> options) : base(options)
+        {
+        }
+
         public DbSet<User> Users { get; set; }
         public DbSet<Fider> Fiders { get; set; }
         public DbSet<Transformer> Transformers { get; set; }
@@ -20,8 +23,7 @@ namespace ElectroBackend.Models
         public DbSet<Workload> Workloads { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<ElectroBackend.Models.Counter> Counter { get; set; }
-        
-       
-        
+
+
     }
 }

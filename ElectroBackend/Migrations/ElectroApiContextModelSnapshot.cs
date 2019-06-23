@@ -434,7 +434,7 @@ namespace ElectroBackend.Migrations
                         .HasForeignKey("CounterId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("ElectroBackend.Models.Line")
+                    b.HasOne("ElectroBackend.Models.Line", "Line")
                         .WithMany("Customers")
                         .HasForeignKey("LineId");
                 });
@@ -448,7 +448,7 @@ namespace ElectroBackend.Migrations
 
             modelBuilder.Entity("ElectroBackend.Models.Line", b =>
                 {
-                    b.HasOne("ElectroBackend.Models.Section")
+                    b.HasOne("ElectroBackend.Models.Section", "Section")
                         .WithMany("Lines")
                         .HasForeignKey("SectionId");
                 });
@@ -488,14 +488,14 @@ namespace ElectroBackend.Migrations
                         .WithMany()
                         .HasForeignKey("CounterId");
 
-                    b.HasOne("ElectroBackend.Models.Tp")
+                    b.HasOne("ElectroBackend.Models.Tp", "Tp")
                         .WithMany("Sections")
                         .HasForeignKey("TpId");
                 });
 
             modelBuilder.Entity("ElectroBackend.Models.Tp", b =>
                 {
-                    b.HasOne("ElectroBackend.Models.Fider")
+                    b.HasOne("ElectroBackend.Models.Fider", "Fider")
                         .WithMany("Tps")
                         .HasForeignKey("FiderId");
 
@@ -524,8 +524,8 @@ namespace ElectroBackend.Migrations
 
             modelBuilder.Entity("ElectroBackend.Models.Workload", b =>
                 {
-                    b.HasOne("ElectroBackend.Models.Tp", "Tp")
-                        .WithMany()
+                    b.HasOne("ElectroBackend.Models.Tp")
+                        .WithMany("Workloads")
                         .HasForeignKey("TpId");
                 });
 #pragma warning restore 612, 618

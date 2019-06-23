@@ -8,7 +8,7 @@ namespace ElectroBackend.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public DateTime Date { get; set; }
-        public virtual Tp Tp { get; set; }
+        public int? TpId { get; set; }
         public virtual List<BusbarSection> BusbarSections { get; set; }
         public virtual List<Phase> Phases { get; set; }
         public Workload()
